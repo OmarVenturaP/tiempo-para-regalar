@@ -10,10 +10,77 @@
   --color-regalo-negro: #333333;
 }
 
+.animate-soft {
+  transition: all 700ms cubic-bezier(0.16,1,0.3,1);
+}
+
 body {
   margin: 0;
   padding: 0;
 }
 html {
   scroll-behavior: smooth;
+}
+
+@keyframes logoFloat {
+  0%,100% { transform: translateY(0) }
+  50% { transform: translateY(-6px) }
+}
+
+@keyframes logoReveal {
+  0% { opacity: 0; transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes ringExpand {
+  0% { opacity: 0; transform: scale(0.85); }
+  100% { opacity: 1; transform: scale(1.05); }
+}
+
+@keyframes textReveal {
+  0% { opacity: 0; transform: translateY(12px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes claimReveal {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes softGlow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes loaderPremium {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-logoReveal {
+  animation: logoReveal 900ms cubic-bezier(0.16,1,0.3,1) forwards;
+}
+
+.animate-ringExpand {
+  animation: ringExpand 1.4s ease-out forwards;
+}
+
+.animate-textReveal {
+  animation: textReveal 700ms cubic-bezier(0.16,1,0.3,1) forwards;
+  animation-delay: 400ms;
+  opacity: 0;
+}
+
+.animate-claimReveal {
+  animation: claimReveal 700ms cubic-bezier(0.16,1,0.3,1) forwards;
+  animation-delay: 650ms;
+  opacity: 0;
+}
+
+.animate-softGlow {
+  animation: softGlow 6s ease-in-out infinite;
+}
+
+.animate-loaderPremium {
+  animation: loaderPremium 2s ease-in-out infinite;
 }
