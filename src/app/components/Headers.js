@@ -46,8 +46,8 @@ export default function Headers() {
             </div>
 
             <nav className="hidden md:flex gap-8 text-sm text-gray-600">
-              <a href="#contacto">Contacto</a>
               <a href="#servicios">Servicios</a>
+              <a href="#contacto">Contacto</a>
             </nav>
           </div>
           <div
