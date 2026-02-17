@@ -48,10 +48,10 @@ export default function NuestrosSericios() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
 
           {[
-            { icon: Gift, title: "Detalles únicos", text: "Contamos con productos especiales para cada temporada." },
+            { icon: Gift, title: "Detalles únicos", text: "Contamos con productos especiales para cada temporada de la mejor calidad." },
             { icon: HeartHandshake, title: "Atención cercana", text: "Trato directo, sin intermediarios." },
             { icon: Sparkles, title: "Diseño elegante", text: "Seleccionamos cuidadosamente cada producto para asegurar que recibas solo lo mejor." },
-            { icon: Truck, title: "Envíos Gratis", text: "Te enviamos tu regalo hasta tu hogar gratis en compras desde $199.00 MXN." },
+            { icon: Truck, title: "Envíos gratis", text: "Te enviamos tu regalo sin costo en compras desde $199.00 MXN dentro de Tonalá, Chiapas." },
             { icon: Smile, title: "Emociones reales", text: "Momentos que generan sonrisas auténticas." },
             { icon: ShieldCheck, title: "Compra 100% confiable", text: "¿Estás fuera de Tonalá, Chiapas? Enviamos a todo México por las mejores paqueterías." },
           ].map((item, index) => {

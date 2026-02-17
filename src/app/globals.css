@@ -57,6 +57,24 @@ html {
   100% { transform: translateX(100%); }
 }
 
+/* ===== Premium floating animation ===== */
+
+.premium-arrow {
+  animation: premiumFloat 2.6s ease-in-out infinite;
+}
+
+@keyframes premiumFloat {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
 .animate-logoReveal {
   animation: logoReveal 900ms cubic-bezier(0.16,1,0.3,1) forwards;
 }

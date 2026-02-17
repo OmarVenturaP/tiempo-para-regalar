@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function useReveal() {
   const ref = useRef(null);
@@ -25,14 +25,42 @@ function useReveal() {
 
   return ref;
 }
+function useScrollIndicator() {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const showTimer = setTimeout(() => {
+      setVisible(true);
+    }, 1400); // aparece después del reveal del hero
+
+    const handleScroll = () => {
+      if (window.scrollY > 80) {
+        setVisible(false);
+      } else {
+        setVisible(true);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      clearTimeout(showTimer);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  return visible;
+}
+
 
 export default function Hero() {
   const heroRef = useReveal();
+  const showScroll = useScrollIndicator();
 
   return (
     <section
       id="inicio"
-      className="relative w-full pt-44 pb-28 flex justify-center px-6 overflow-hidden"
+      className="relative w-full pt-44 pb-30 flex justify-center px-6 overflow-hidden"
     >
       <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
       {/* COLLAGE MOBILE (fondo) */}
@@ -69,11 +97,11 @@ export default function Hero() {
             <span className="text-[#7C3AED]">UNICO</span>
           </h1>
 
-          <p className="text-gray-600 text-lg">
+          <p className="text-gray-600 text-lg pb-12">
             Una selección exclusiva de productos especiales para alegrar cada
             momento de tu vida y hacerlo especial.
           </p>
-
+          {/* 
           <button
             className="
               relative overflow-hidden
@@ -94,7 +122,8 @@ export default function Hero() {
                     }}
           >
             Contacto
-          </button>
+          </button>*/}
+
         </div>
 
         {/* COLLAGE */}
@@ -118,6 +147,62 @@ export default function Hero() {
           </div>
         </div>
       </div>
+{/* SCROLL INDICATOR — PREMIUM */}
+<button
+  onClick={() => {
+    const section = document.getElementById("catalogo");
+    if (section) {
+      section.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }}
+  className={`
+    absolute bottom-10 left-1/2 -translate-x-1/2
+    transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]
+    ${showScroll
+      ? "opacity-100 translate-y-0"
+      : "opacity-0 translate-y-6 pointer-events-none"}
+  `}
+>
+  <div
+    className="
+      group
+      px-5 py-3
+      rounded-full
+      backdrop-blur-xl
+      bg-white/40 dark:bg-white/10
+      border border-white/30
+      shadow-[0_10px_40px_rgba(124,58,237,0.25)]
+      hover:shadow-[0_20px_70px_rgba(124,58,237,0.45)]
+      transition-all duration-500
+      flex items-center gap-3
+    "
+  >
+    <span className="text-xs tracking-widest uppercase text-gray-700/80">
+      Explorar catálogo
+    </span>
+
+    <div className="premium-arrow">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-5 h-5 text-[#7C3AED]"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={2}
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M19 9l-7 7-7-7"
+        />
+      </svg>
+    </div>
+  </div>
+</button>
+
     </section>
   );
 }

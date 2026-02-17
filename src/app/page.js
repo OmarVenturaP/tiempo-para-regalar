@@ -8,6 +8,7 @@ import Hero from "./components/Hero";
 import Contacto from "./components/Contacto";
 import Footer from "./components/Footer";
 import NuestrosSericios from "./components/NuestrosServicios";
+import AngelUp from "./components/AngelUp";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -57,17 +58,20 @@ useEffect(() => {
         <div className="h-full w-full bg-linear-to-r from-regalo-lila via-regalo-rosa to-regalo-azul-c animate-loaderPremium" />
       </div>
     </div>
-
   );
 
   return (
     <div className="min-h-screen bg-white text-gray-800 font-sans pt-6">
     <Headers />
     <Hero />
-    <div className="my-22 flex justify-center">
+    <div className="mt-4 mb-12 flex justify-center">
       <span className="h-px w-80 bg-linear-to-r from-transparent via-regalo-lila/40 to-transparent" />
     </div>
     <CatalogoProductos />
+    <div className="my-12 flex justify-center">
+      <span className="h-px w-80 bg-linear-to-r from-transparent via-regalo-lila/40 to-transparent" />
+    </div>
+    <AngelUp />
     <NuestrosSericios />
     <Contacto />
     <Footer />

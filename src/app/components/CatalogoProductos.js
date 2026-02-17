@@ -12,6 +12,9 @@ export default function CatalogoProductos() {
   const [categoria, setCategoria] = useState("Todas");
   const [orden, setOrden] = useState("default");
 
+  const PRODUCTOS_POR_PAGINA = 8;
+  const [paginaActual, setPaginaActual] = useState(1);
+
   useEffect(() => {
     async function cargarProductos() {
       try {

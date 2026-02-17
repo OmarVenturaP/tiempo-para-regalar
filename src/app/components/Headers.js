@@ -28,7 +28,7 @@ export default function Headers() {
   return (
         <header className="fixed top-6 inset-x-0 z-40 flex justify-center px-4">
           <div className="relative w-full max-w-6xl bg-white/80 backdrop-blur-xl rounded-full px-10 py-4 border border-[#E7E2D8] shadow-[0_25px_60px_rgba(0,0,0,0.12)] flex items-center justify-between">
-            <button
+          <button
               onClick={() => setMenuOpen(!menuOpen)}
               className="md:hidden p-2 rounded-full hover:bg-black/5"
               aria-label="Abrir menú"
@@ -40,10 +40,12 @@ export default function Headers() {
               <a href="#inicio">Inicio</a>
               <a href="#catalogo">Catálogo</a>
             </nav>
+            <a href="#inicio" className="absolute left-1/2 -translate-x-1/2 font-serif text-2xl">
+              <div className="">
+                <img src="https://res.cloudinary.com/dzgqpqv9f/image/upload/v1766933777/logo_bg_regalar_yfbuhv.png" alt="Logo TIEMPO PARA REGALAR" className="w-12 h-12" />
+              </div>
+            </a>
 
-            <div className="absolute left-1/2 -translate-x-1/2 font-serif text-2xl">
-              <img src="https://res.cloudinary.com/dzgqpqv9f/image/upload/v1766933777/logo_bg_regalar_yfbuhv.png" alt="Logo TIEMPO PARA REGALAR" className="w-12 h-12" />
-            </div>
 
             <nav className="hidden md:flex gap-8 text-sm text-gray-600">
               <a href="#servicios">Servicios</a>
