@@ -1,0 +1,16 @@
+{
+  "name": "Tiempo para Regalar",
+  "short_name": "Regalos Tonalá",
+  "description": "Catálogo de accesorios, mochilas, bolsos y detalles en Tonalá, Chiapas.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#9B51E0",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}

@@ -25,6 +25,7 @@ export const metadata = {
     default: 'Tiempo para Regalar | Más que un regalo, una experiencia',
   },
   
+  manifest: '/manifest.json',
   
   description: 'Encuentra el regalo perfecto para toda ocasión. Accesorios, detalles , perfumes, mochilas, bolsos, relojes y sorpresas. Envíos a domicilio seguros. ¡Sorprende a quien más amas hoy!',
   
