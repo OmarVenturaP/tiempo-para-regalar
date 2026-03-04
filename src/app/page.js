@@ -9,6 +9,7 @@ import Contacto from "./components/Contacto";
 import Footer from "./components/Footer";
 import NuestrosSericios from "./components/NuestrosServicios";
 import AngelUp from "./components/AngelUp";
+import BannerMadres from "./components/BanerMadres";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -62,6 +63,7 @@ useEffect(() => {
 
   return (
     <div className="min-h-screen bg-white text-gray-800 font-sans pt-6">
+    <BannerMadres />
     <Headers />
     <Hero />
     <div className="mt-4 mb-12 flex justify-center">
