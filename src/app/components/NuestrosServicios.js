@@ -43,8 +43,8 @@ export default function NuestrosServicios() {
     },
     { 
       icon: HeartHandshake, 
-      title: "Asesoría Personal", 
-      text: "¿Buscas el regalo perfecto? Te ayudamos a elegir el detalle ideal según tu presupuesto, estilo y ocasión." 
+      title: "Entrega inmediata", 
+      text: "Todos nuestros productos están disponibles y listos para ser entregados. No hay tiempos de espera. Compra ahora y recíbelo hoy mismo." 
     },
     { 
       icon: Gift, 

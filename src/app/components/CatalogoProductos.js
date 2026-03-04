@@ -1,6 +1,6 @@
 "use client";
 import Image from 'next/image';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 
 export default function CatalogoProductos() {
   const [productos, setProductos] = useState([]);
@@ -96,10 +96,26 @@ useEffect(() => {
   const productosVisibles = productosFiltrados.slice(indicePrimerProducto, indiceUltimoProducto);
   const totalPaginas = Math.ceil(productosFiltrados.length / PRODUCTOS_POR_PAGINA);
 
-  const cambiarPagina = (numero) => {
+  const gridRef = useRef(null);
+
+const cambiarPagina = (numero) => {
+    if (gridRef.current) {
+      gridRef.current.style.minHeight = `${gridRef.current.offsetHeight}px`;
+    }
+
     setPaginaActual(numero);
-    document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' });
+
+    setTimeout(() => {
+      document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
+
+    setTimeout(() => {
+      if (gridRef.current) {
+        gridRef.current.style.minHeight = ''; 
+      }
+    }, 800);
   };
+
 
   return (
     <div>
@@ -157,7 +173,7 @@ useEffect(() => {
           </div>
         ) : productosVisibles.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-5 mb-12 animate-in fade-in duration-500">
+            <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-5 mb-12 animate-in fade-in duration-500">
               {productosVisibles.map((producto) => (
                 <TarjetaProducto 
                   key={producto.id} 
@@ -178,7 +194,7 @@ useEffect(() => {
                       : "bg-white text-regalo-azul-c border border-gray-200 hover:bg-regalo-azul-c hover:text-white"
                   }`}
                 >
-                  ❮ Anterior
+                  ❮<span className='hidden sm:block'> Anterior</span>
                 </button>
 
                 <div className="flex gap-1 overflow-x-auto max-w-[200px] md:max-w-none">
@@ -206,7 +222,7 @@ useEffect(() => {
                       : "bg-white text-regalo-azul-c border border-gray-200 hover:bg-regalo-azul-c hover:text-white"
                   }`}
                 >
-                  Siguiente ❯
+                  <span className='hidden sm:block'>Siguiente </span>❯
                 </button>
               </div>
             )}
