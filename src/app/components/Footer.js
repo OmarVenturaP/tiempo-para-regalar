@@ -18,7 +18,7 @@ export default function Footer() {
         <p className="mt-2 text-xs text-white/40">
           Diseñado por{" "}
           <a
-            href="https://servitec-app.vercel.app/"
+            href="https://servitec-tonala.es/"
             target="_blank"
             className="text-regalo-lila hover:opacity-80 transition"
           >
