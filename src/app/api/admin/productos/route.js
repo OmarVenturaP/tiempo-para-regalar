@@ -1,22 +1,34 @@
 import { getPool } from '@/lib/db';
+import { verifyToken, getTokenFromCookies } from '@/lib/auth';
 import { NextResponse } from 'next/server';
 
+function unauthorized() {
+  return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+}
+
+function checkAuth(req) {
+  const token = getTokenFromCookies(req);
+  if (!token) return null;
+  return verifyToken(token);
+}
+
 export async function POST(req) {
+  const user = checkAuth(req);
+  if (!user) return unauthorized();
   const connection = await getPool().getConnection(); // Obtenemos conexión para la transacción
   try {
     const body = await req.json();
     const { 
       nombre, id_categoria, precio_original, precio_oferta, 
-      descripcion, id_estado, imagenes, colores, temporadas 
+      descripcion, id_estado, vendedor, imagenes, colores, temporadas 
     } = body;
 
     await connection.beginTransaction();
 
-    // 1. Insertar el Producto Base
     const [prodResult] = await connection.query(
-      `INSERT INTO cat_productos (nombre, id_categoria, precio_original, precio_oferta, descripcion, id_estado) 
-       VALUES (?, ?, ?, ?, ?, ?)`,
-      [nombre, id_categoria, precio_original, precio_oferta, descripcion, id_estado]
+      `INSERT INTO cat_productos (nombre, id_categoria, precio_original, precio_oferta, descripcion, id_estado, vendedor) 
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [nombre, id_categoria, precio_original, precio_oferta, descripcion, id_estado, vendedor || null]
     );
     const id_producto = prodResult.insertId;
 
@@ -55,17 +67,17 @@ export async function POST(req) {
 }
 
 export async function PUT(req) {
+  const user = checkAuth(req);
+  if (!user) return unauthorized();
   const connection = await getPool().getConnection();
   try {
     const body = await req.json();
     const { 
       id_producto, nombre, id_categoria, precio_original, 
-      precio_oferta, descripcion, vendidos, id_estado, imagenes, colores, temporadas
+      precio_oferta, descripcion, vendidos, id_estado, vendedor, imagenes, colores, temporadas
     } = body;
     await connection.beginTransaction();
-    console.log(body)
 
-    // 1. Actualizar datos base del producto
     await connection.query(
       `UPDATE cat_productos 
       SET 
@@ -75,9 +87,10 @@ export async function PUT(req) {
         precio_oferta=?, 
         descripcion=?, 
         id_estado=?, 
-        vendidos=?
+        vendidos=?,
+        vendedor=?
        WHERE id_producto=?`,
-      [nombre, id_categoria, precio_original, precio_oferta, descripcion, id_estado, vendidos, id_producto]
+      [nombre, id_categoria, precio_original, precio_oferta, descripcion, id_estado, vendidos, vendedor || null, id_producto]
     );
 
     // 2. ACTUALIZAR IMÁGENES (Estrategia: Borrar todo e insertar lo nuevo)
@@ -119,17 +132,29 @@ export async function PUT(req) {
 }
 
 export async function DELETE(req) {
+  const user = checkAuth(req);
+  if (!user) return unauthorized();
+  const connection = await getPool().getConnection();
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
-    const pool = getPool();
 
     if (!id) return NextResponse.json({ error: 'ID requerido' }, { status: 400 });
 
-    await pool.query('DELETE FROM cat_productos WHERE id_producto = ?', [id]);
+    await connection.beginTransaction();
+
+    await connection.query('DELETE FROM cat_images WHERE id_producto = ?', [id]);
+    await connection.query('DELETE FROM cat_colores WHERE id_producto = ?', [id]);
+    await connection.query('DELETE FROM cat_temporadas WHERE id_producto = ?', [id]);
+    await connection.query('DELETE FROM cat_productos WHERE id_producto = ?', [id]);
+
+    await connection.commit();
 
     return NextResponse.json({ success: true, message: 'Eliminado correctamente' });
   } catch (error) {
+    await connection.rollback();
     return NextResponse.json({ error: error.message }, { status: 500 });
+  } finally {
+    connection.release();
   }
 }

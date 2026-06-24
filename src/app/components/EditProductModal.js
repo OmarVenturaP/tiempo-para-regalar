@@ -2,11 +2,8 @@
 import { useState, useEffect } from 'react';
 import ImageUploader from '@/components/admin/ImageUploader';
 
-export default function EditProductModal({ producto, onClose, onUpdate }) {
-  const [loading, setLoading] = useState(false);
-  const [catalogos, setCatalogos] = useState({ categorias: [], estados: [] });
-  
-  const [form, setForm] = useState({
+function parseForm(producto) {
+  return {
     id_producto: producto.id_producto,
     nombre: producto.nombre || '',
     id_categoria: producto.id_categoria || '',
@@ -15,27 +12,20 @@ export default function EditProductModal({ producto, onClose, onUpdate }) {
     precio_oferta: producto.precio_oferta || '',
     descripcion: producto.descripcion || '',
     vendidos: producto.vendidos || '',
-    imagenes: [],
-    colores: [],
-    temporadas: [] 
-  });
+    imagenes: producto.imagenes ? producto.imagenes.split('|').map(s => s.trim()) : [],
+    colores: producto.colores ? producto.colores.split(',').map(s => s.trim()) : [],
+    temporadas: producto.temporadas ? producto.temporadas.split(',').map(s => s.trim()) : [],
+  };
+}
+
+export default function EditProductModal({ producto, onClose, onUpdate }) {
+  const [loading, setLoading] = useState(false);
+  const [catalogos, setCatalogos] = useState({ categorias: [], estados: [] });
+  const [form, setForm] = useState(() => parseForm(producto));
 
   useEffect(() => {
     fetch('/api/catalogos').then(res => res.json()).then(setCatalogos);
-
-    
-    const imgsArray = producto.imagenes ? producto.imagenes.split(' | ') : [];
-    const colsArray = producto.colores ? producto.colores.split(', ') : [];
-  
-    const tempsArray = producto.temporadas ? producto.temporadas.split(', ') : [];
-
-    setForm(prev => ({
-      ...prev,
-      imagenes: imgsArray,
-      colores: colsArray,
-      temporadas: tempsArray
-    }));
-  }, [producto]);
+  }, []);
   
   const handleNewImage = (url) => {
     setForm(prev => ({ ...prev, imagenes: [...prev.imagenes, url] }));
@@ -64,7 +54,7 @@ export default function EditProductModal({ producto, onClose, onUpdate }) {
 
     const payload = {
       ...form,
-      imagenes: form.imagenes.join(' | '),
+      imagenes: form.imagenes.join('|'),
       colores: form.colores,
       temporadas: form.temporadas 
     };
