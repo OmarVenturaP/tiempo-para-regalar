@@ -5,8 +5,6 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 export default function CatalogoProductos() {
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [productoSeleccionado, setProductoSeleccionado] = useState(null);
-  const [imgIndexModal, setImgIndexModal] = useState(0);
   const [error, setError] = useState(null);
   
   const [busqueda, setBusqueda] = useState("");
@@ -45,12 +43,7 @@ export default function CatalogoProductos() {
     cargarProductos();
   }, []);
 
-useEffect(() => {
-    const evento = new CustomEvent('estadoModalCambio', { 
-      detail: { abierto: !!productoSeleccionado } 
-    });
-    window.dispatchEvent(evento);
-  }, [productoSeleccionado]);
+
 
   const categorias = useMemo(() => {
     return ["Todas", ...new Set(productos.map(p => p.categoria))];
@@ -173,12 +166,11 @@ const cambiarPagina = (numero) => {
           </div>
         ) : productosVisibles.length > 0 ? (
           <>
-            <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-5 mb-12 animate-in fade-in duration-500">
+            <div ref={gridRef} className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 mb-12 animate-in fade-in duration-500">
               {productosVisibles.map((producto) => (
                 <TarjetaProducto 
                   key={producto.id} 
                   producto={producto} 
-                  onOpenModal={() => setProductoSeleccionado(producto)}
                 />
               ))}
             </div>
@@ -265,124 +257,6 @@ const cambiarPagina = (numero) => {
         )}
       </section>
 
-      {/* MODAL DE DETALLE */}
-      {productoSeleccionado && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
-          <div className="bg-white rounded-3xl max-w-4xl w-full max-h-[95vh] overflow-y-auto relative shadow-2xl overflow-hidden">
-            <button 
-              onClick={() => {
-                setProductoSeleccionado(null);
-                setImgIndexModal(0); 
-              }}
-              className="absolute top-4 right-4 z-30 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center text-gray-500 hover:text-regalo-rosa shadow-md transition-colors font-bold"
-            >✕</button>
-            
-            <div className="flex flex-col md:flex-row min-h-[500px] md:h-full">
-              <div className="md:w-1/2 relative bg-gray-200 md:bg-gray-900 flex items-center justify-center overflow-hidden min-h-[350px] md:h-auto">
-                <div className="hidden md:block absolute inset-0 z-0">
-                  <Image 
-                    src={productoSeleccionado.imagenes[imgIndexModal]} 
-                    alt="Fondo difuminado" 
-                    fill
-                    quality={80} 
-                    className="w-full h-full object-cover blur-2xl opacity-60 scale-125 transition-all duration-700" 
-                  />
-                </div>
-                <Image 
-                  src={productoSeleccionado.imagenes[imgIndexModal]} 
-                  alt={productoSeleccionado.nombre} 
-                  fill
-                  priority 
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="z-10 object-cover md:object-contain p-0 md:p-6 transition-all duration-500 md:[mask-image:radial-gradient(ellipse_at_center,black_70%,transparent_100%)] md:hover:[mask-image:radial-gradient(ellipse_at_center,black_90%,transparent_100%)]" 
-                />
-                
-                {productoSeleccionado.imagenes.length > 1 && (
-                  <>
-                    <button 
-                      onClick={() => setImgIndexModal((prev) => (prev - 1 + productoSeleccionado.imagenes.length) % productoSeleccionado.imagenes.length)}
-                      className="absolute z-20 left-4 top-1/2 -translate-y-1/2 bg-white/40 md:bg-white/20 hover:bg-white/90 backdrop-blur-md p-3 rounded-full shadow-lg text-white hover:text-regalo-azul-r transition-all"
-                    >❮</button>
-                    
-                    <button 
-                      onClick={() => setImgIndexModal((prev) => (prev + 1) % productoSeleccionado.imagenes.length)}
-                      className="absolute z-20 right-4 top-1/2 -translate-y-1/2 bg-white/40 md:bg-white/20 hover:bg-white/90 backdrop-blur-md p-3 rounded-full shadow-lg text-white hover:text-regalo-azul-r transition-all"
-                    >❯</button>
-
-                    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20">
-                      {productoSeleccionado.imagenes.map((_, i) => (
-                        <button 
-                          key={i}
-                          onClick={() => setImgIndexModal(i)}
-                          className={`h-2 rounded-full transition-all shadow-sm ${i === imgIndexModal ? 'w-8 bg-white' : 'w-2 bg-white/40'}`}
-                        />
-                      ))}
-                    </div>
-                  </>
-                )}
-              </div>
-
-              <div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-white relative z-10">
-                <div className="flex items-center gap-3">
-                  <span className="text-regalo-azul-c font-bold text-sm uppercase tracking-widest">
-                    {productoSeleccionado.categoria}
-                  </span>
-                  {productoSeleccionado.vendidos > 10 && (
-                    <span className="bg-orange-100 text-orange-600 px-2 py-0.5 rounded-md text-[10px] font-black uppercase">
-                      🔥 Popular
-                    </span>
-                  )}
-                </div>
-                <h3 className="text-4xl font-black text-regalo-azul-r mt-2 leading-tight">{productoSeleccionado.nombre}</h3>
-                <p className="text-sm text-gray-500 font-medium mt-1">
-                    Más de <span className="font-bold text-gray-800">{productoSeleccionado.vendidos} personas</span> han regalado esto.
-                  </p>
-                  
-                <p className="text-gray-600 mt-6 text-lg leading-relaxed">{productoSeleccionado.descripcion}</p>
-                
-                <div className="mt-8">
-                  <p className="font-bold text-gray-800">Colores disponibles:</p>
-                  <div className="flex flex-wrap gap-2 mt-3">
-                    {productoSeleccionado.colores.map(c => (
-                      <span key={c} className="px-4 py-2 bg-gray-50 rounded-xl text-sm font-medium border border-gray-100 text-gray-700 italic">
-                        {c}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-6 mt-10 p-6 bg-regalo-azul-c/5 rounded-3xl">
-                  <p className="text-4xl font-black text-regalo-rosa">${productoSeleccionado.precio}</p>
-                  {productoSeleccionado.precioOriginal && (
-                    <div className="flex flex-col border-l-2 border-gray-200 pl-4">
-                      <span className="text-gray-400 line-through text-base">${productoSeleccionado.precioOriginal}</span>
-                      <span className="text-regalo-rosa font-black text-sm">
-                        -{Math.round(100 - (productoSeleccionado.precio * 100 / productoSeleccionado.precioOriginal))}% OFF
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                <button 
-                  onClick={() => {
-                    const telefono = "5219619326135"; 
-                    const mensaje = `Hola! 👋 Me interesa obtener más información sobre: *${productoSeleccionado.nombre}* Precio: *$${productoSeleccionado.precio}* ¿Tienen disponibilidad?`;
-                    const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
-                    window.open(url, '_blank');
-                  }}
-                  className="mt-8 w-full bg-[#25D366] hover:bg-[#128C7E] text-white py-5 rounded-2xl font-bold text-xl transition-all shadow-xl flex items-center justify-center gap-3 group"
-                >
-                  <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
-                  </svg>
-                  Contáctanos
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      
       <section className="bg-gray-50 py-12 px-6 border-t border-gray-200 mt-12 hidden">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-xl font-bold text-gray-800 mb-4">
@@ -396,8 +270,7 @@ const cambiarPagina = (numero) => {
         </div>
       </section>
 
-      {/* BOTÓN WHATSAPP MEJORADO: Recibe prop para ocultarse */}
-      <BotonWhatsappFlotante modalAbierto={!!productoSeleccionado} />
+      <BotonWhatsappFlotante />
     </div>
   );
 }
@@ -408,7 +281,7 @@ const cambiarPagina = (numero) => {
 const SkeletonCard = () => {
   return (
     <div className="bg-white rounded-3xl shadow-lg h-full overflow-hidden border-2 border-transparent p-4 animate-pulse">
-      <div className="bg-gray-200 h-64 rounded-xl mb-4 w-full"></div>
+      <div className="bg-gray-200 h-48 sm:h-64 rounded-xl mb-4 w-full"></div>
       <div className="flex justify-center mb-2">
         <div className="h-4 bg-gray-200 rounded w-3/4"></div>
       </div>
@@ -421,15 +294,9 @@ const SkeletonCard = () => {
 };
 
 // 2. BOTÓN FLOTANTE WHATSAPP (CON ANIMACIÓN PREMIUM Y LÓGICA DE OCULTAR)
-const BotonWhatsappFlotante = ({ modalAbierto }) => {
+const BotonWhatsappFlotante = () => {
   return (
-    <div 
-      className={`fixed bottom-6 left-6 z-40 transition-all duration-500 transform ${
-        modalAbierto 
-          ? 'opacity-0 translate-y-20 pointer-events-none'
-          : 'opacity-100 translate-y-0' // Visible
-      }`}
-    >
+    <div className="fixed bottom-6 left-6 z-40">
       <a 
         href="https://wa.me/5219619326135?text=Hola,%20quisiera%20más%20información%20sobre%20tus%20productos." 
         target="_blank"
@@ -459,7 +326,7 @@ const Badge = ({ estado }) => {
     oferta: "bg-regalo-amarillo text-red-800",
   };
   return (
-    <span className={`absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-bold uppercase shadow-md z-10 ${estilos[estado] || "bg-regalo-lila text-white"}`}>
+    <span className={`absolute top-2 left-2 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase shadow-md z-10 ${estilos[estado] || "bg-regalo-lila text-white"}`}>
       {estado}
     </span>
   );
@@ -495,82 +362,122 @@ const BadgeTemporada = ({ temporadas }) => {
   const { texto, clase } = config[temporadaActivaHoy] || { texto: "Temporada", clase: "bg-gray-500" };
 
   return (
-    <span className={`absolute top-12 left-4 px-3 py-1 rounded-full text-[11px] font-black uppercase shadow-lg z-10 text-white animate-bounce-slow ${clase}`}>
+    <span className={`absolute top-7 left-2 px-2 py-0.5 rounded-full text-[9px] font-black uppercase shadow-lg z-10 text-white animate-bounce-slow ${clase}`}>
       ✨ {texto}
     </span>
   );
 };
 
-function TarjetaProducto({ producto, onOpenModal }) {
+function toSlug(nombre, id) {
+  const slug = nombre
+    .toLowerCase()
+    .replace(/[^a-z0-9áéíóúüñ]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  return `${slug}-${id}`;
+}
+
+function TarjetaProducto({ producto }) {
+  const scrollRef = useRef(null);
   const [imgIndex, setImgIndex] = useState(0);
 
-  const nextImg = (e) => {
-    e.stopPropagation();
-    setImgIndex((prev) => (prev + 1) % producto.imagenes.length);
+  const handleScroll = () => {
+    if (!scrollRef.current) return;
+    const el = scrollRef.current;
+    const idx = Math.round(el.scrollLeft / el.clientWidth);
+    setImgIndex(idx);
   };
 
   const prevImg = (e) => {
+    e.preventDefault();
     e.stopPropagation();
-    setImgIndex((prev) => (prev - 1 + producto.imagenes.length) % producto.imagenes.length);
+    if (!scrollRef.current) return;
+    const el = scrollRef.current;
+    const prevIdx = (imgIndex - 1 + producto.imagenes.length) % producto.imagenes.length;
+    el.scrollTo({ left: prevIdx * el.clientWidth, behavior: 'smooth' });
+    setImgIndex(prevIdx);
   };
 
+  const nextImg = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!scrollRef.current) return;
+    const el = scrollRef.current;
+    const nextIdx = (imgIndex + 1) % producto.imagenes.length;
+    el.scrollTo({ left: nextIdx * el.clientWidth, behavior: 'smooth' });
+    setImgIndex(nextIdx);
+  };
+
+  const productHref = `/producto/${toSlug(producto.nombre, producto.id_producto)}`;
+
   return (
-    <div className="group bg-white rounded-3xl shadow-lg flex flex-col h-full overflow-hidden border-2 border-transparent hover:border-regalo-lila transition-all duration-300 hover:shadow-2xl hover:bg-white/90 hover:backdrop-blur-lg hover:-translate-y-2">
-      <div className="relative h-80 overflow-hidden bg-gray-200">
+    <div className="group bg-white rounded-2xl shadow-md flex flex-col h-full overflow-hidden border border-transparent hover:border-regalo-lila transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+      <div className="relative h-36 sm:h-48 overflow-hidden bg-gray-200">
         <Badge estado={producto.estado} />
         <BadgeTemporada temporadas={producto.temporadas} />
-        <Image 
-          src={producto.imagenes[imgIndex]} 
-          alt={producto.nombre}
-          fill
-          className="object-cover group-hover:scale-110 transition-transform duration-500"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          priority={false} 
-        />
-        <div className="absolute top-4 right-4 bg-white/90 px-3 py-1 rounded-full text-xs font-bold text-regalo-rosa shadow">
-          {producto.categoria}
+        <div
+          ref={scrollRef}
+          onScroll={handleScroll}
+          className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none h-full"
+        >
+          {producto.imagenes.map((url, i) => (
+            <div key={i} className="relative w-full h-full shrink-0 snap-start">
+              <Image
+                src={url}
+                alt={producto.nombre}
+                fill
+                className="object-cover group-hover:scale-110 transition-transform duration-500"
+                sizes="(max-width: 768px) 50vw, 25vw"
+                priority={i === 0}
+              />
+            </div>
+          ))}
         </div>
+        <a href={productHref} target="_blank" rel="noopener noreferrer" className="absolute inset-0 z-10" />
         {producto.imagenes.length > 1 && (
           <>
-            <button onClick={prevImg} className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full hover:bg-white text-regalo-azul-r">❮</button>
-            <button onClick={nextImg} className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full hover:bg-white text-regalo-azul-r">❯</button>
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+            <button onClick={prevImg} className="absolute left-1.5 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-1.5 rounded-full shadow text-gray-600 hover:text-regalo-lila transition z-20 text-sm">❮</button>
+            <button onClick={nextImg} className="absolute right-1.5 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-1.5 rounded-full shadow text-gray-600 hover:text-regalo-lila transition z-20 text-sm">❯</button>
+            <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 flex gap-1 pointer-events-none z-20">
               {producto.imagenes.map((_, i) => (
-                <div key={i} className={`w-2 h-2 rounded-full ${i === imgIndex ? 'bg-regalo-rosa' : 'bg-white/50'}`} />
+                <div key={i} className={`w-1.5 h-1.5 rounded-full transition-all ${i === imgIndex ? 'bg-white w-2.5' : 'bg-white/50'}`} />
               ))}
             </div>
           </>
         )}
+        <div className="absolute top-2 right-2 bg-white/90 px-2 py-0.5 rounded-full text-[10px] font-bold text-regalo-rosa shadow pointer-events-none z-20">
+          {producto.categoria}
+        </div>
       </div>
 
-      <div className="p-6 text-center">
+      <div className="p-3 text-center">
         {producto.vendidos > 0 ? (
-          <p className="text-xs font-bold text-gray-400 mb-1 flex items-center justify-center gap-1">
+          <p className="text-[10px] font-bold text-gray-400 mb-0.5 flex items-center justify-center gap-1">
             <span className="text-regalo-rosa">★</span> +{producto.vendidos} vendidos
           </p>
         ) : (
-          <p className="text-xs font-bold text-gray-300 mb-1 flex items-center justify-center gap-1 italic">
-            <span className="text-regalo-rosa">★</span> ¡Recién agregado! <span className="text-regalo-rosa">★</span>
+          <p className="text-[10px] font-bold text-gray-300 mb-0.5 flex items-center justify-center gap-1 italic">
+            <span className="text-regalo-rosa">★</span> Nuevo
           </p>
         )}
-        <h3 className="text-xl font-bold mb-2 group-hover:text-regalo-lila transition">{producto.nombre}</h3>
-        <div className="flex justify-center items-center gap-3 mb-4">
+        <h3 className="text-sm font-bold leading-tight mb-1 group-hover:text-regalo-lila transition line-clamp-2">{producto.nombre}</h3>
+        <div className="flex justify-center items-center gap-2 mb-2">
           {producto.precioOriginal && (
-            <span className="text-gray-400 line-through text-lg">${producto.precioOriginal}</span>
+            <span className="text-gray-400 line-through text-xs">${producto.precioOriginal}</span>
           )}
-          <p className="text-2xl font-black text-regalo-lila">${producto.precio}</p>
+          <p className="text-lg font-black text-regalo-lila">${producto.precio}</p>
         </div>
-        <button 
-          disabled={producto.estado === 'agotado'}
-          onClick={onOpenModal}
-          className={`w-full py-3 rounded-xl font-bold transition-colors shadow-md hover:shadow-xl ${
-            producto.estado === 'agotado' 
-            ? 'bg-gray-300 cursor-not-allowed' 
+        <a
+          href={productHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`block w-full py-2 rounded-lg text-xs font-bold transition-colors shadow-sm hover:shadow-md ${
+            producto.estado === 'agotado'
+            ? 'bg-gray-300 cursor-not-allowed pointer-events-none'
             : 'bg-linear-to-r from-[#7C3AED] to-[#EC4899] hover:bg-regalo-lila text-white'
           }`}
         >
           {producto.estado === 'agotado' ? 'Sin Stock' : 'Ver Detalle'}
-        </button>
+        </a>
       </div>
     </div>
   );

@@ -39,22 +39,6 @@ export const metadata = {
 
   openGraph: {
     title: 'Tiempo para Regalar | Más que un regalo, una experiencia',
-    description: 'Mira nuestro catálogo de regalos y accesorios. ¡Pide el tuyo hoy!',
-    url: 'https://tiempo-para-regalar.vercel.app',
-    siteName: 'Tiempo para Regalar',
-    images: [
-      {
-        url: OG_IMAGE_URL,
-        width: 1200,
-        height: 630,
-        alt: 'Catálogo de Tiempo para Regalar',
-      },
-    ],
-    locale: 'es_MX',
-    type: 'website',
-  },
-  openGraph: {
-    title: 'Tiempo para Regalar | Más que un regalo, una experiencia',
     description: 'Descubre los mejores regalos en Tonalá, Chiapas: accesorios, perfumes, mochilas, bolsos, relojes y sorpresas únicas. Envíos a domicilio seguros. ¡Haz tu pedido ahora!',
     url: 'https://tiempo-para-regalar.vercel.app',
     siteName: 'Tiempo para Regalar',
